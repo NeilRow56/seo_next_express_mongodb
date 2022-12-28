@@ -8,17 +8,22 @@ require("dotenv").config();
 
 // bring routes
 const blogRoutes = require("./routes/blog");
+const authRoutes = require("./routes/auth");
 
 // app
 const app = express();
 
 //db
-mongoose
-  .connect(process.env.mongoDB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("DB connected"));
+mongoose.set("strictQuery", false);
+mongoose.connect(process.env.mongoDB, () => {
+  console.log("Connected to MongoDB");
+});
+// mongoose
+//   .connect(process.env.mongoDB, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   })
+//   .then(() => console.log("DB connected"));
 
 // middlewares
 app.use(morgan("dev"));
@@ -31,6 +36,7 @@ if (process.env.NODE_ENV === "development") {
 
 // routes middleware
 app.use("/api", blogRoutes);
+app.use("/api", authRoutes);
 
 // port
 const port = process.env.PORT || 8000;
